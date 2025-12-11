@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: affiliate-ui
+  labels:
+    app: affiliate-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: affiliate-ui
+  template:
+    metadata:
+      labels:
+        app: affiliate-ui
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: affiliate-ui
+          image: ghcr.io/dheenaoo7/affiliate-ui:latest
+          ports:
+            - containerPort: 8088
