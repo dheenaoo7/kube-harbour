@@ -7,8 +7,7 @@ metadata:
 spec:
   selector:
     app: affiliate-ui
-  type: NodePort
+  type: ClusterIP
   ports:
-  - port: 8088
-    targetPort: 8088
-    nodePort: 30000
+    - port: 80
+      targetPort: 8088

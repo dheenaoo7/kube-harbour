@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: affiliate-ui
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+    - host: contentflow.page
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: affiliate-ui
+                port:
+                  number: 80
+
