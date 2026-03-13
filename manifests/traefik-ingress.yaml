@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: main-traefik-ingress
+  namespace: default
+  annotations:
+    # High priority ensures specific hosts are matched accurately
+    traefik.ingress.kubernetes.io/router.priority: "100"
+spec:
+  ingressClassName: traefik
+  rules:
+    # Rule 1: Subdomain (Edusence)
+    - host: edusence.contentflow.page
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: edusence-backend
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: edusence-frontend
+                port:
+                  number: 80
+
+    # Rule 2: Root Domain (ContentFlow)
+    - host: contentflow.page
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: affiliate-ui
+                port:
+                  number: 80
