@@ -4,12 +4,20 @@ metadata:
   name: main-traefik-ingress
   namespace: default
   annotations:
-    # High priority ensures specific hosts are matched accurately
-    traefik.ingress.kubernetes.io/router.priority: "100"
+    traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
   ingressClassName: traefik
   rules:
-    # Rule 1: Subdomain (Edusence)
+    - host: dheenadayalan.tech
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: portfolio-service
+                port:
+                  number: 80
     - host: edusence.contentflow.page
       http:
         paths:
