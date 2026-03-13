@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflared
+spec:
+  selector:
+    matchLabels:
+      app: cloudflared
+  template:
+    metadata:
+      labels:
+        app: cloudflared
+    spec:
+      containers:
+      - name: cloudflared
+        image: cloudflare/cloudflared:latest
+        args:
+        - tunnel
+        - --config
+        - /etc/cloudflared/config.yaml
+        - run
+        volumeMounts:
+        - name: config
+          mountPath: /etc/cloudflared
+          readOnly: true
+        - name: creds
+          mountPath: /etc/cloudflared/creds
+          readOnly: true
+      volumes:
+      - name: creds
+        secret:
+          secretName: tunnel-credentials
+      - name: config
+        configMap:
+          name: cloudflared-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudflared-config
+data:
+  config.yaml: | 
+    tunnel: f4917025-0906-47bc-bc72-33c6d701dfd
+    credentials-file: /etc/cloudflared/creds/credentials.json
+    ingress:
+      - hostname: dheenadayalan.tech  # <--- New domain
+        service: http://10.43.61.230:80
+        originRequest:
+          httpHostHeader: dheenadayalan.tech
+      # This sends ALL traffic for your domains to Traefik
+      - hostname: edusence.contentflow.page
+        service: http://10.43.61.230:80
+        originRequest:
+          httpHostHeader: edusence.contentflow.page
+      - hostname: contentflow.page
+        service: http://10.43.61.230:80
+        originRequest:
+          httpHostHeader: contentflow.page
+      - service: http_status:404
